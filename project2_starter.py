@@ -28,6 +28,7 @@ If you are getting "encoding errors" while trying to open, read, or write from a
 
 
 def load_listing_results(html_path) -> list[tuple]:
+    
     """
     Load file data from html_path and parse through it to find listing titles and listing ids.
 
@@ -41,7 +42,11 @@ def load_listing_results(html_path) -> list[tuple]:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    my_list = []
+    html_file = "search_results.html"
+    with open(html_file, 'r', encoding="utf-8-sig") as file:
+        html_content = file.read()
+    soup = BeautifulSoup(html_content, 'html.parser')
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -70,6 +75,7 @@ def get_listing_details(listing_id) -> dict:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
+
     pass
     # ==============================
     # YOUR CODE ENDS HERE
