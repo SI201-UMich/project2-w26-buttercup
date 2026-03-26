@@ -47,11 +47,11 @@ def load_listing_results(html_path) -> list[tuple]:
     with open(html_file, 'r', encoding="utf-8-sig") as file:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
-    title_tags = soup.findall('div', data-testid='listing_card_title')
+    title_tags = soup.findall('div', class_='t1jojoys dir dir-ltr')
     id_tags = soup.findall('a', class_='l1j9v1wn bn2bl2p dir dir-ltr')
     for i in range(len(title_tags)):
-        listing_id = re.find(r"\d{7}", id_tags[i].get('href', None).text)
-        listing_tup = (title_tags[0], listing_id)
+        listing_id = re.find(r"\d{7,8}", id_tags[i].get('href', None).text())
+        listing_tup = (title_tags[0].text(), listing_id)
         my_list.append(listing_tup)
     return my_list
     # ==============================
@@ -147,7 +147,19 @@ def create_listing_database(html_path) -> list[tuple]:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    listing_database = []
+    title_and_id = load_listing_results(html_path)
+    for listing in title_and_id:
+        title, listing_id = listing
+        details = get_listing_details(listing_id)
+        policy_number = details[listing_id]["policy_number"]
+        host_type = details[listing_id]["host_type"]
+        host_name = details[listing_id]["host_name"]
+        room_type = details[listing_id]["room_type"]
+        location_rating = details[listing_id]["location_rating"]
+        listing_tup = title, listing_id, policy_number, host_type, host_name, room_type, location_rating
+        listing_database.append(listing_tup)
+    return listing_database
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
