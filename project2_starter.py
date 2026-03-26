@@ -47,7 +47,7 @@ def load_listing_results(html_path) -> list[tuple]:
     with open(html_file, 'r', encoding="utf-8-sig") as file:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
-    title_tags = soup.findall('div', data-testid='listing_card_title')
+    title_tags = soup.findall('div', class_='t1jojoys dir dir-ltr')
     id_tags = soup.findall('a', class_='l1j9v1wn bn2bl2p dir dir-ltr')
     for i in range(len(title_tags)):
         listing_id = re.find(r"\d{7,8}", id_tags[i].get('href', None).text())
