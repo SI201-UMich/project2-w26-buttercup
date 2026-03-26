@@ -96,8 +96,34 @@ def get_listing_details(listing_id) -> dict:
     if not os.path.exists(html_file):
         print(f"Error: File {html_file} does not exist.")
         return listing_details
-
-
+    with open(html_file, 'r', encoding="utf-8-sig") as file:
+        html_content = file.read()
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    policy_number_tag = soup.find('li', string=re.compile(r'Policy number:'))
+    if policy_number_tag:
+        policy_number = policy_number_tag.get_text(strip=True).split(': ')[1]
+        listing_details[listing_id]['policy_number'] = policy_number
+    host_type_tag = soup.find('div', class_='t1mwk1n0 dir dir-ltr').text()
+    if host_type_tag and 'Superhost' in host_type_tag.get_text():
+        listing_details[listing_id]['host_type'] = 'Superhost'
+    host_name_tag = soup.find('div', class_='')
+    if host_name_tag:
+        host_name = host_name_tag.get_text(strip=True)
+        listing_details[listing_id]['host_name'] = host_name
+    room_type_tag = soup.find('div', class_='t6mzqp7 dir dir-ltr').text()
+    if room_type_tag:
+        room_type = room_type_tag.get_text(strip=True)
+        listing_details[listing_id]['room_type'] = room_type
+    location_rating_tag = soup.find('span', class_='r1dxllyb dir dir-ltr')
+    if location_rating_tag:
+        try:
+            location_rating = float(location_rating_tag.get_text(strip=True))
+            listing_details[listing_id]['location_rating'] = location_rating
+        except ValueError:
+            pass
+    return listing_details
+        
    
 
     pass
