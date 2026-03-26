@@ -75,6 +75,23 @@ def get_listing_details(listing_id) -> dict:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
+    listing_details = {
+        listing_id:{
+            "policy_number": "",
+            "host_type": "regular",
+            "host_name": "",
+            "room_type": "",
+            "location_rating": 0.0
+
+        }
+    }
+    html_file = f"listing_{listing_id}.html"
+    if not os.path.exists(html_file):
+        print(f"Error: File {html_file} does not exist.")
+        return listing_details
+
+
+   
 
     pass
     # ==============================
