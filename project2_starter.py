@@ -189,6 +189,15 @@ def output_csv(data, filename) -> None:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
+    data.sort(key=lambda x: x[6], reverse=True)
+    with open(filename, 'w', encoding="utf-8-sig", newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["title", "listing_id", "policy_number", "host_type", "host_name", "room_type", "location_rating"])
+        for listing in data:
+            writer.writerow(listing)
+            
+        
+        
     pass
     # ==============================
     # YOUR CODE ENDS HERE
