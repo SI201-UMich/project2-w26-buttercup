@@ -100,33 +100,40 @@ def get_listing_details(listing_id) -> dict:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    policy_number_tag = soup.find('li', string=re.compile(r'Policy number:'))
+    policy_number_tag = soup.find('li', class_='ll4r3nl dir dir-ltr').text()
     if policy_number_tag:
-        policy_number = policy_number_tag.get_text(strip=True).split(': ')[1]
+        policy_number = policy_number_tag.get_text(strip=True)
         listing_details[listing_id]['policy_number'] = policy_number
-    host_type_tag = soup.find('div', class_='t1mwk1n0 dir dir-ltr').text()
+    host_type_tag = soup.find('div', class_='_1mhorg9').text()
     if host_type_tag and 'Superhost' in host_type_tag.get_text():
         listing_details[listing_id]['host_type'] = 'Superhost'
-    host_name_tag = soup.find('div', class_='')
+    else:
+        listing_details[listing_id]['host_type'] = 'regular'
+    host_name_tag = soup.find('div', class_='_14i3z6h')
     if host_name_tag:
         host_name = host_name_tag.get_text(strip=True)
-        listing_details[listing_id]['host_name'] = host_name
-    room_type_tag = soup.find('div', class_='t6mzqp7 dir dir-ltr').text()
+        listing_details[listing_id]['host_name'] = re.search(r'by\s(.*\s?a?n?d?[.*]?)', host_name)
+    room_type_tag = soup.find('div', class_='ll4r2nl').text()
     if room_type_tag:
         room_type = room_type_tag.get_text(strip=True)
-        listing_details[listing_id]['room_type'] = room_type
-    location_rating_tag = soup.find('span', class_='r1dxllyb dir dir-ltr')
+        if re.search(r'[Pp]?rivate', room_type):
+            listing_details[listing_id]['room_type'] = 'Private Room'
+        if re.search(r'[Ss]?hared', room_type):
+            listing_details[listing_id]['room_type'] = 'Shared Room'
+        else:
+            listing_details[listing_id]['room_type'] = 'Entire Room'
+    location_rating_tag = soup.find('span', class_='_17p6nbba')
     if location_rating_tag:
         try:
-            location_rating = float(location_rating_tag.get_text(strip=True))
-            listing_details[listing_id]['location_rating'] = location_rating
+            location_rating = location_rating_tag.get_text(strip=True)
+            try:
+                rating = float(re.search(r'\d\.\d{1,2}', location_rating))
+                listing_details[listing_id]['location_rating'] = rating
+            except:
+                pass
         except ValueError:
             pass
     return listing_details
-        
-   
-
-    pass
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
