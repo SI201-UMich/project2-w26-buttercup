@@ -108,16 +108,23 @@ def get_listing_details(listing_id) -> dict:
             listing_details[listing_id]['host_type'] = 'regular'
     else:
         listing_details[listing_id]['host_type'] = 'regular'
-    host_name_tag = soup.find('h2', class_='hnwb2pb dir dir-ltr')
+    host_name_tag = soup.find('h2', class_='_14i3z6h')
     if host_name_tag:
-        host_name = host_name_tag.get_text(strip=True)
-        listing_details[listing_id]['host_name'] = re.search(r'Hosted\sby\s(.*\s?a?n?d?[.*]?)', host_name)
+        text = host_name_tag.get_text(strip=True)
+        match = re.search(r'hosted\s+by\s+(.+)', text)
+        if match:
+            host_name = match.group(1)
+        else:
+            host_name = None
+        listing_details[listing_id]['host_name'] = host_name
     room_type_tag = soup.find('h2', class_='_14i3z6h')
     if room_type_tag:
         room_type = room_type_tag.get_text(strip=True)
-        if re.search(r'Private', room_type):
+        private_match = re.search(r'Private', room_type)
+        shared_match = re.search(r'Shared', room_type)
+        if private_match:
             listing_details[listing_id]['room_type'] = 'Private Room'
-        if re.search(r'Shared', room_type):
+        elif shared_match:
             listing_details[listing_id]['room_type'] = 'Shared Room'
         else:
             listing_details[listing_id]['room_type'] = 'Entire Room'
