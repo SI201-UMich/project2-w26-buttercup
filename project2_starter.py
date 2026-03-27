@@ -85,14 +85,7 @@ def get_listing_details(listing_id) -> dict:
     # YOUR CODE STARTS HERE
     # ==============================
     listing_details = {
-        listing_id:{
-            "policy_number": "",
-            "host_type": "regular",
-            "host_name": "",
-            "room_type": "",
-            "location_rating": 0.0
-
-        }
+        listing_id: {}
     }
     html_file = os.path.join("html_files", f"listing_{listing_id}.html")
     if not os.path.exists(html_file):
@@ -102,41 +95,40 @@ def get_listing_details(listing_id) -> dict:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    policy_number_tag = soup.find('li', class_='f192zjbe dir dir-ltr')
+    policy_number_tag = soup.find('li', class_='f19phm7j dir dir-ltr')
     if policy_number_tag:
-        full_text = policy_number_tag.get_text(strip=True)
-        if "License number:" in full_text:
-            policy_number = full_text.split("License number:")[-1].strip()
-            listing_details[listing_id]['policy_number'] = policy_number
-    host_type_tag = soup.find('div', class_='_1mhorg9')
-    if host_type_tag and 'Superhost' in host_type_tag.get_text():
-        listing_details[listing_id]['host_type'] = 'Superhost'
-    host_name_tag = soup.find('div', class_='_14i3z6h')
+        policy_number = policy_number_tag.find('span', class_='ll4r2nl dir dir-ltr').get_text(strip=True)
+        listing_details[listing_id]['policy_number'] = policy_number
+    host_type_tag = soup.find('span', class_='_1mhorg9')
+    if host_type_tag:
+        host_type = host_type_tag.get_text(strip=True)
+        if 'Superhost' in host_type:
+            listing_details[listing_id]['host_type'] = 'Superhost'
+        else:
+            listing_details[listing_id]['host_type'] = 'regular'
+    else:
+        listing_details[listing_id]['host_type'] = 'regular'
+    host_name_tag = soup.find('h2', class_='hnwb2pb dir dir-ltr')
     if host_name_tag:
         host_name = host_name_tag.get_text(strip=True)
-        listing_details[listing_id]['host_name'] = re.search(r'by\s(.*\s?a?n?d?[.*]?)', host_name)
-    room_type_tag = soup.find('div', class_='ll4r2nl')
+        listing_details[listing_id]['host_name'] = re.search(r'Hosted\sby\s(.*\s?a?n?d?[.*]?)', host_name)
+    room_type_tag = soup.find('h2', class_='_14i3z6h')
     if room_type_tag:
         room_type = room_type_tag.get_text(strip=True)
-        if re.search(r'[Pp]?rivate', room_type):
+        if re.search(r'Private', room_type):
             listing_details[listing_id]['room_type'] = 'Private Room'
-        if re.search(r'[Ss]?hared', room_type):
+        if re.search(r'Shared', room_type):
             listing_details[listing_id]['room_type'] = 'Shared Room'
         else:
             listing_details[listing_id]['room_type'] = 'Entire Room'
-    location_rating_tag = soup.find('span', class_='_17p6nbba')
+    location_rating_tag = soup.find('span', class_='_1jvg42j')
     if location_rating_tag:
+        location_rating = location_rating_tag.get_text(strip=True)
         try:
-            location_rating = location_rating_tag.get_text(strip=True)
-            try:
-                match = re.search(r'\d\.\d{1,2}', location_rating)
-                if match:
-                    rating = float(match.group(1))
-                listing_details[listing_id]['location_rating'] = rating
-            except:
-                pass
-        except ValueError:
-            pass
+            rating = float(re.search(r'\d\.\d', location_rating).group())
+            listing_details[listing_id]['location_rating'] = rating
+        except:
+            listing_details[listing_id]['location_rating'] = 0.0
     return listing_details
     # ==============================
     # YOUR CODE ENDS HERE
