@@ -94,7 +94,7 @@ def get_listing_details(listing_id) -> dict:
 
         }
     }
-    html_file = f"listing_{listing_id}.html"
+    html_file = os.path.join("html_files", f"listing_{listing_id}.html")
     if not os.path.exists(html_file):
         print(f"Error: File {html_file} does not exist.")
         return listing_details
@@ -102,20 +102,20 @@ def get_listing_details(listing_id) -> dict:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    policy_number_tag = soup.find('li', class_='ll4r3nl dir dir-ltr').text()
+    policy_number_tag = soup.find('li', class_='f192zjbe dir dir-ltr')
     if policy_number_tag:
-        policy_number = policy_number_tag.get_text(strip=True)
-        listing_details[listing_id]['policy_number'] = policy_number
-    host_type_tag = soup.find('div', class_='_1mhorg9').text()
+        full_text = policy_number_tag.get_text(strip=True)
+        if "License number:" in full_text:
+            policy_number = full_text.split("License number:")[-1].strip()
+            listing_details[listing_id]['policy_number'] = policy_number
+    host_type_tag = soup.find('div', class_='_1mhorg9')
     if host_type_tag and 'Superhost' in host_type_tag.get_text():
         listing_details[listing_id]['host_type'] = 'Superhost'
-    else:
-        listing_details[listing_id]['host_type'] = 'regular'
     host_name_tag = soup.find('div', class_='_14i3z6h')
     if host_name_tag:
         host_name = host_name_tag.get_text(strip=True)
         listing_details[listing_id]['host_name'] = re.search(r'by\s(.*\s?a?n?d?[.*]?)', host_name)
-    room_type_tag = soup.find('div', class_='ll4r2nl').text()
+    room_type_tag = soup.find('div', class_='ll4r2nl')
     if room_type_tag:
         room_type = room_type_tag.get_text(strip=True)
         if re.search(r'[Pp]?rivate', room_type):
@@ -129,7 +129,9 @@ def get_listing_details(listing_id) -> dict:
         try:
             location_rating = location_rating_tag.get_text(strip=True)
             try:
-                rating = float(re.search(r'\d\.\d{1,2}', location_rating))
+                match = re.search(r'\d\.\d{1,2}', location_rating)
+                if match:
+                    rating = float(match.group(1))
                 listing_details[listing_id]['location_rating'] = rating
             except:
                 pass
@@ -325,7 +327,13 @@ class TestCases(unittest.TestCase):
         # 1) Check that listing 467507 has the correct policy number "STR-0005349".
         # 2) Check that listing 1944564 has the correct host type "Superhost" and room type "Entire Room".
         # 3) Check that listing 1944564 has the correct location rating 4.9.
-        pass
+        results_list = []
+        for html_id in html_list:
+            results_list.append(get_listing_details(html_id))
+        self.assertEqual(results_list[0]["467507"]["policy_number"], "STR-0005349")
+        self.assertEqual(results_list[2]["1944564"]["host_type"], "Superhost")
+        self.assertEqual(results_list[2]["1944564"]["room_type"], "Entire Room")
+        self.assertEqual(results_list[2]["1944564"]["location_rating"], 4.9)
 
     def test_create_listing_database(self):
         # TODO: Check that each tuple in detailed_data has exactly 7 elements:
