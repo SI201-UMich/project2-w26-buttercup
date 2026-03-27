@@ -256,7 +256,17 @@ def validate_policy_numbers(data) -> list[str]:
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
-    pass
+    invalid_policy_ids = []
+    for tup in data:
+        listing_title, listing_id, policy_number, host_type, host_name, room_type, location_rating = tup
+        if policy_number != 'pending' and policy_number != 'exempt':
+            if re.search(r'20\d{2}-00\d{4}STR', policy_number):
+                pass
+            elif re.search(r'STR-000\d{4}', policy_number):
+                pass
+            else:
+                invalid_policy_ids.append(listing_id)
+    return invalid_policy_ids
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
