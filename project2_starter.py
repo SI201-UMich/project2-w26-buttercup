@@ -260,6 +260,17 @@ def google_scholar_searcher(query):
     # ==============================
     # YOUR CODE STARTS HERE
     # ==============================
+    url = f"https://scholar.google.com/scholar?q={query.replace(' ', '+')}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        html = response.text
+    else:
+        print(f"Failed to retrieve the webpage. Status code: {response.status_code}")
+        return []
+    soup = BeautifulSoup(html, 'html.parser')
+    title_tags = soup.find_all('div', class_='gs_r.gs_or.gs_scl')
+    return [tag.get_text() for tag in title_tags]
+
     pass
     # ==============================
     # YOUR CODE ENDS HERE
