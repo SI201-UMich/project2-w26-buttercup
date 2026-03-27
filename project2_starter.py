@@ -47,14 +47,15 @@ def load_listing_results(html_path) -> list[tuple]:
     with open(html_file, 'r', encoding="utf-8-sig") as file:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
-    title_tags = soup.find_all('div', class_='t1jojoys dir dir-ltr')
-    id_tags = soup.find_all('a', class_='l1j9v1wn bn2bl2p dir dir-ltr')
-    for i in range(len(title_tags)):
-        match = re.search(r"/rooms/(\d+)", id_tags[i].get('href', ''))
-        if match:
-            listing_id = match.group(1)
-        listing_tup = (title_tags[i].get_text(), listing_id)
-        my_list.append(listing_tup)
+    listings = soup.find_all('div', class_='c4mnd7m dir dir-ltr')
+    for listing in listings:
+        title_tag = listing.find('div', class_='t1jojoys dir dir-ltr')
+        id_tag = listing.find('a', class_='l1j9v1wn bn2bl2p dir dir-ltr')
+        if title_tag and id_tag:
+            match = re.search(r"/(\d{6,})", id_tag.get('href', ''))
+            if match:
+                listing_id = match.group(1)
+                my_list.append((title_tag.get_text(), listing_id))
     return my_list
     # ==============================
     # YOUR CODE ENDS HERE
@@ -113,7 +114,7 @@ def get_listing_details(listing_id) -> dict:
         text = host_name_tag.get_text(strip=True)
         match = re.search(r'hosted\s+by\s+(.+)', text)
         if match:
-            host_name = match.group(1)
+            host_name = match.group(1).replace('\xa0', ' ')
         else:
             host_name = None
         listing_details[listing_id]['host_name'] = host_name
@@ -356,12 +357,13 @@ class TestCases(unittest.TestCase):
         # TODO: Call avg_location_rating_by_room_type() and save the output.
         # TODO: Check that the average for "Private Room" is 4.9.
         averages = avg_location_rating_by_room_type(self.detailed_data)
-        self.assertAlmostEqual(averages['Private Room'], 4.866666666666667)
+        self.assertAlmostEqual(averages['Private Room'], 4.875)
 
     def test_validate_policy_numbers(self):
         # TODO: Call validate_policy_numbers() on detailed_data and save the result into a variable invalid_listings.
         # TODO: Check that the list contains exactly "16204265" for this dataset.
-        pass
+        invalid_policies = validate_policy_numbers(self.detailed_data)
+        self.assertEqual(invalid_policies, ['16204265'])
 
 
 def main():
