@@ -43,15 +43,17 @@ def load_listing_results(html_path) -> list[tuple]:
     # YOUR CODE STARTS HERE
     # ==============================
     my_list = []
-    html_file = "search_results.html"
+    html_file = html_path
     with open(html_file, 'r', encoding="utf-8-sig") as file:
         html_content = file.read()
     soup = BeautifulSoup(html_content, 'html.parser')
-    title_tags = soup.findall('div', class_='t1jojoys dir dir-ltr')
-    id_tags = soup.findall('a', class_='l1j9v1wn bn2bl2p dir dir-ltr')
+    title_tags = soup.find_all('div', class_='t1jojoys dir dir-ltr')
+    id_tags = soup.find_all('a', class_='l1j9v1wn bn2bl2p dir dir-ltr')
     for i in range(len(title_tags)):
-        listing_id = re.find(r"\d{7,8}", id_tags[i].get('href', None).text())
-        listing_tup = (title_tags[0].text(), listing_id)
+        match = re.search(r"/rooms/(\d+)", id_tags[i].get('href', ''))
+        if match:
+            listing_id = match.group(1)
+        listing_tup = (title_tags[i].get_text(), listing_id)
         my_list.append(listing_tup)
     return my_list
     # ==============================
@@ -235,7 +237,6 @@ def avg_location_rating_by_room_type(data) -> dict:
                 room_type_counts[room_type] = 1
     avg_ratings = {room_type: room_type_ratings[room_type] / room_type_counts[room_type] for room_type in room_type_ratings}
     return avg_ratings
-    
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -296,8 +297,6 @@ def google_scholar_searcher(query):
     soup = BeautifulSoup(html, 'html.parser')
     title_tags = soup.find_all('div', class_='gs_r.gs_or.gs_scl')
     return [tag.get_text() for tag in title_tags]
-
-    pass
     # ==============================
     # YOUR CODE ENDS HERE
     # ==============================
@@ -314,7 +313,8 @@ class TestCases(unittest.TestCase):
     def test_load_listing_results(self):
         # TODO: Check that the number of listings extracted is 18.
         # TODO: Check that the FIRST (title, id) tuple is  ("Loft in Mission District", "1944564").
-        pass
+        self.assertEqual(len(self.listings), 18)
+        self.assertEqual(self.listings[0], ("Loft in Mission District", "1944564"))
 
     def test_get_listing_details(self):
         html_list = ["467507", "1550913", "1944564", "4614763", "6092596"]
