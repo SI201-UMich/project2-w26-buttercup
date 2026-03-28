@@ -1,0 +1,14 @@
+I think the current is adequate in some ways, but inadequate in other ways. It's adequate because it does keep a 
+record of hosts, remove unregistered listings, and it can be monitered through the data sharing. It's inadequate because 
+listings that are illegal are not always caught quickly. Hosts could also make false claims which brings a concern 
+to accountability and tracing violations. Therfore it's importatnt to build systems that are enforceable.
+
+
+One factor that I think is important to consider when discussing the legaility of web scraping is privacy regulations. This is 
+protected by privacy laws therefore scarping it without consent would have consquences. Even if the data is publicly visible 
+these laws restrict the collection of personal data. If these laws are violated this can result in a fine. Also, with user rights 
+they have the right to delete their data, but if it's been scraped this would make it diffcult to manage.
+
+When deciding to web scrape, I think two guidelines would be to minimize the data and respect the access. One should avoid scraping data 
+that is personally identafiable. This would include information like phone numbers, emails, and names. Also, one shouldn't scrape beyond 
+logins and authentication. This is because it would be considered unauthorized.
