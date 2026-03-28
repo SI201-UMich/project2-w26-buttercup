@@ -238,6 +238,12 @@ def avg_location_rating_by_room_type(data) -> dict:
                 room_type_ratings[room_type] = location_rating
                 room_type_counts[room_type] = 1
     avg_ratings = {room_type: room_type_ratings[room_type] / room_type_counts[room_type] for room_type in room_type_ratings}
+    for type in avg_ratings:
+        if len(str(avg_ratings[type])) > 3:
+            if int(str(avg_ratings[type])[3]) >= 5:
+                avg_ratings[type] = float(str(avg_ratings[type])[:3]) + 0.1
+            else:
+                avg_ratings[type] = float(str(avg_ratings[type])[:3])
     return avg_ratings
     # ==============================
     # YOUR CODE ENDS HERE
@@ -363,7 +369,7 @@ class TestCases(unittest.TestCase):
         # TODO: Call avg_location_rating_by_room_type() and save the output.
         # TODO: Check that the average for "Private Room" is 4.9.
         averages = avg_location_rating_by_room_type(self.detailed_data)
-        self.assertAlmostEqual(averages['Private Room'], 4.875)
+        self.assertAlmostEqual(averages['Private Room'], 4.9)
 
     def test_validate_policy_numbers(self):
         # TODO: Call validate_policy_numbers() on detailed_data and save the result into a variable invalid_listings.
