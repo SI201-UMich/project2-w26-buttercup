@@ -1,0 +1,19 @@
+1. I think the current system is pretty adequate accountability around short-term rentals in San Franscisco. 
+   I believe this system is adequate because of the rentals we used to test our functions, only one of them
+   had an invalid policy number. One invalid policy number out of all listings we used isn't a lot. Having
+   only one invalid policy number get through is pretty good and makes me believe the system is adequate. 
+
+2. One factor I believe is important to consider when discussing the legality of web scraping is what
+   information is being scraped. If the information is not anything including private personal information
+   then I don't think it is as concerning as if it is private personal information. For security reasons, 
+   having private personal information scraped from the web is very scary. However, scraping the web for
+   something like ice cream flavors wouldn't pose any real threat.
+
+3. The first guideline I think is important to consider when deciding whether to do web scraping is can
+   the information be collected through a voluntary survey. When it comes to collecting personal information,
+   the people who's information is being collected should be able to decided whether or not they want it to
+   be collected, making a survey a more ethical choice. The second guideline I think is important to consider
+   when deciding whether to do web scraping is what are the terms and conditions of the place the information
+   is being scraped from. If a website asks users to consent to their information being shared before they
+   use the site, then scraping information from that site is more ethical than scraping information from a
+   site that does not ask for users' consent to their information being shared.
