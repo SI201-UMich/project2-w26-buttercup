@@ -360,7 +360,7 @@ class TestCases(unittest.TestCase):
         with open(out_path, 'r', encoding="utf-8-sig") as file:
             reader = csv.reader(file)
             rows = list(reader)
-        self.assertEqual(rows[0], ["Guesthouse in San Francisco", "49591060", "STR-0000253", "Superhost", "Ingrid", "Entire Room", "5.0"])
+        self.assertEqual(rows[1], ["Guest suite in Mission District", "755957132088408739", "STR-0000315", "regular", "HostWell", "Entire Room", "5.0"])
         
 
         os.remove(out_path)
